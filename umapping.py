@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 import umap
 import seaborn as sns
 
+# Estimating MLE distance between clusters
 def mle_estimation(test_data, mean, cov):
     k = test_data.shape[1]
     dist = 0
@@ -18,6 +19,7 @@ def mle_estimation(test_data, mean, cov):
         dist += (-k/2)*np.log(2*np.pi) - 0.5*np.log(np.linalg.det(cov)) - 0.5 * np.matmul(np.matmul(np.transpose(test_data[i,:]-mean),np.linalg.inv(cov)),test_data[i,:]-mean)
     return dist
 
+# KNN Estimation of distance between clusters
 def knn_estimation(target_data, source_data, k):
     res = [0, 0, 0, 0]
     for i in range(0,len(target_data)):
@@ -35,6 +37,8 @@ histogram_features = False # SEt histogram_features to True in order to use hist
 
 
 if all_layers == True:
+    
+    # subplot axis
     fig = plt.figure(constrained_layout=True)
     gs = fig.add_gridspec(2, 6)
     ax1 = fig.add_subplot(gs[0, :2])
@@ -48,6 +52,8 @@ if all_layers == True:
     ax5 = fig.add_subplot(gs[-1, 3:5])
     ax5.set_title('UMAP for Discriminator Layer 5')
     
+    
+    #loading activations
     for k in range(0,5):
         with open("activations/Bordeaux/Bedroom_source/Bedrooms/activations_det.txt", "rb") as fp:   # Unpickling
             bed_bed = pickle.load(fp)[k]
@@ -260,10 +266,10 @@ if all_layers == True:
         
         
         
-        
+        # initializing UMAP algorithm
         reducer = umap.UMAP()
         
-        
+        # Extracting unsupervised embeddings
         if (not supervised):
             comb = np.concatenate((bed,cel,cit,flo,ima,kit,lfw,pla),0)    
             embedding = reducer.fit_transform(comb)
@@ -277,7 +283,7 @@ if all_layers == True:
             lfw_emb = embedding[6*num_img:7*num_img,:]
             pla_emb = embedding[7*num_img:8*num_img,:]
     
-        
+        # Extracting supervised embeddings
         else:
             num_train = int(5/6 * num_img)
             num_test = int(1/6 * num_img)
@@ -355,6 +361,7 @@ if all_layers == True:
         #ax.title('UMAP for Discriminator Layer ' + str(k+1))
         #ax.show()
         
+        # extracting centroids of each cluster
         bed_cen = np.median(bed_emb,0)
         cel_cen = np.median(cel_emb,0)
         cit_cen = np.median(cit_emb,0)
@@ -364,6 +371,8 @@ if all_layers == True:
         lfw_cen = np.median(lfw_emb,0)
         pla_cen = np.median(pla_emb,0)
         
+        
+        # Calculating L2 norms between centroids of each cluster pair
         cit_bed = np.linalg.norm(cit_cen-bed_cen)
         cit_cel = np.linalg.norm(cit_cen-cel_cen)
         cit_ima = np.linalg.norm(cit_cen-ima_cen)
@@ -385,6 +394,7 @@ if all_layers == True:
         lfw_ima = np.linalg.norm(lfw_cen-ima_cen)
         lfw_pla = np.linalg.norm(lfw_cen-pla_cen)
 else:
+    # Loading last layer activations 
     # Bedrooms target
     with open("activations/Bordeaux/Bedroom_source/Bedrooms/activations.txt", "rb") as fp:   # Unpickling
         bed_bed = pickle.load(fp)[0]
@@ -901,7 +911,7 @@ else:
     del ipc_bed, ipc_pla, ipc_ima, ipc_cel
      
 
-    
+    # Running UMAP algorithm
     reducer = umap.UMAP()
     
     if supervised:
@@ -974,8 +984,6 @@ else:
     sc6 = plt.scatter(kit_emb[:,0], kit_emb[:,1], s=14, marker='o', color=sns.color_palette()[5])
     sc7 = plt.scatter(lfw_emb[:,0], lfw_emb[:,1], s=14, marker='o', color=sns.color_palette()[6])
     sc8 = plt.scatter(pla_emb[:,0], pla_emb[:,1], s=14, marker='o', color=sns.color_palette()[7])
-    if not supervised:
-        sc9 = plt.scatter(ipc_emb[:,0], ipc_emb[:,1], s=14, marker='o', color=sns.color_palette()[8])
     
     
     if not supervised:    
@@ -1004,8 +1012,6 @@ else:
     kit_cen = np.mean(kit_emb,0)
     lfw_cen = np.mean(lfw_emb,0)
     pla_cen = np.mean(pla_emb,0)
-    if not supervised:
-        ipc_cen = np.mean(ipc_emb,0)
     
     
     bed_cov = np.cov(np.transpose(bed_emb))
@@ -1016,9 +1022,8 @@ else:
     kit_cov = np.cov(np.transpose(kit_emb))
     lfw_cov = np.cov(np.transpose(lfw_emb))
     pla_cov = np.cov(np.transpose(pla_emb))
-    if not supervised: 
-        ipc_cov = np.cov(np.transpose(ipc_emb))
     
+    # L2 estimation of distance
     cit_bed = np.linalg.norm(cit_cen-bed_cen)
     cit_cel = np.linalg.norm(cit_cen-cel_cen)
     cit_ima = np.linalg.norm(cit_cen-ima_cen)
@@ -1034,18 +1039,13 @@ else:
     kit_ima = np.linalg.norm(kit_cen-ima_cen)
     kit_pla = np.linalg.norm(kit_cen-pla_cen)
     
-    
     lfw_bed = np.linalg.norm(lfw_cen-bed_cen)
     lfw_cel = np.linalg.norm(lfw_cen-cel_cen)
     lfw_ima = np.linalg.norm(lfw_cen-ima_cen)
     lfw_pla = np.linalg.norm(lfw_cen-pla_cen)
     
-    if not supervised:
-        ipc_bed = np.linalg.norm(ipc_cen-bed_cen)
-        ipc_cel = np.linalg.norm(ipc_cen-cel_cen)
-        ipc_ima = np.linalg.norm(ipc_cen-ima_cen)
-        ipc_pla = np.linalg.norm(ipc_cen-pla_cen)
-        
+    
+    # MLE Estimation of distance
     cit_bed_mle = mle_estimation(cit_emb,bed_cen,bed_cov)
     cit_cel_mle = mle_estimation(cit_emb,cel_cen,cel_cov)
     cit_ima_mle = mle_estimation(cit_emb,ima_cen,ima_cov)
@@ -1069,6 +1069,7 @@ else:
     
     source = np.concatenate((ima_emb,pla_emb,bed_emb,cel_emb),0)
     
+    # KNN Estimation of distance
     flo_knn = knn_estimation(flo_emb, source, 20)
     lfw_knn = knn_estimation(lfw_emb, source, 20)
     kit_knn = knn_estimation(kit_emb, source, 20)

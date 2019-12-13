@@ -360,6 +360,7 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as session:
     _images, _labels = next(gen)
     if not gener:
         res = session.run(layers_dis, feed_dict={all_real_data_conv: _images, all_real_labels: _labels})
+        # Initializing Semantic segmentation network
         model = pspnet_50_ADE_20K()
         indices = np.load('indices_dissection.npy')
         indices = np.flip(indices)
@@ -368,7 +369,9 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as session:
         os.chdir(path)
         filenames = os.listdir()
         lay = res[0]
+        # obtaining binary activation maps
         lay = lay > 0
+        # reshaping binary activation maps to have same size as semantic segmentations
         lay_res = np.zeros((lay.shape[0],lay.shape[1],473,473),dtype=bool)
         for k in range(0,len(lay)):
             for l in range(0,len(lay[k])):
@@ -377,6 +380,7 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as session:
                 filt = cv2.resize(filt,(473,473))
                 filt = filt.astype(bool)
                 lay_res[k,l,:,:] = filt
+        # calculating IoU for each filter with each object class
         filt_iou = np.zeros((lay.shape[1],m))
         for k in range(1,BATCH_SIZE+1):
             filename = filenames[k]
@@ -393,12 +397,14 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as session:
         #    pickle.dump(res, fp)
     else:
         res2 = session.run(layers_gen, feed_dict={all_real_data_conv: _images, all_real_labels: _labels})
+        # taking outputs of generator and getting them in [0,255] domain
         out = res2[4]
         out = np.moveaxis(out,1,3)
         out = out / 2
         out = out + 0.5
         out = out * 255
         out = np.round(out)
+        # resizing output images
         out_res = np.zeros((out.shape[0],473,473,out.shape[3]))
         for k in range(0,len(out)):
             out_res[k,:,:,:] = cv2.resize(out[k,:,:,:],(473,473))
@@ -407,6 +413,7 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as session:
         #indices = 7
         m = len(indices)
         lay = res2[1]
+        # segmenting output images and comparing them to interior filter outputs
         model = pspnet_50_ADE_20K()
         lay = lay > 0
         lay_res = np.zeros((lay.shape[0],lay.shape[1],473,473),dtype=bool)
