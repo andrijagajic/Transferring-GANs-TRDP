@@ -224,18 +224,11 @@ pla = np.concatenate((pla_bed, pla_cel, pla_ima, pla_pla),1)
 
 del pla_bed, pla_pla, pla_ima, pla_cel
 
-
-
 reducer = umap.UMAP()
 comb = np.concatenate((bed,cel,cit,flo,ima,kit,lfw,pla),0)
 
 embedding = reducer.fit_transform(comb)
-#reducer.fit(comb_train)
 
-#embedding = reducer.transform(comb_test)
-
-
-print("im here") 
 bed_emb = embedding[0:600,:]
 cel_emb = embedding[600:1200,:]
 cit_emb = embedding[1200:1800,:]
@@ -246,35 +239,3 @@ lfw_emb = embedding[3600:4200,:]
 pla_emb = embedding[4200:4800,:]
     
 
-
-#bed_emb = embedding[0:100,:]    
-#cel_emb = embedding[100:200,:]
-#cit_emb = embedding[200:300,:]
-#flo_emb = embedding[300:400,:]
-#ima_emb = embedding[400:500,:]
-#kit_emb = embedding[500:600,:]
-#lfw_emb = embedding[600:700,:]
-#pla_emb = embedding[700:800,:]
-
-#colors = ['b', 'c', 'y', 'm', 'r', 'p', 'k', 'g']
-##        plt.figure()
-#
-#
-#sc1 = self.MplWidget.canvas.axes.scatter(bed_emb[:,0], bed_emb[:,1], s=14, marker='o', color=sns.color_palette()[0])
-#sc2 = self.MplWidget.canvas.axes.scatter(cel_emb[:,0], cel_emb[:,1], s=14, marker='o', color=sns.color_palette()[1])
-#sc3 = self.MplWidget.canvas.axes.scatter(cit_emb[:,0], cit_emb[:,1], s=14, marker='o', color=sns.color_palette()[2])
-#sc4 = self.MplWidget.canvas.axes.scatter(flo_emb[:,0], flo_emb[:,1], s=14, marker='o', color=sns.color_palette()[3])
-#sc5 = self.MplWidget.canvas.axes.scatter(ima_emb[:,0], ima_emb[:,1], s=14, marker='o', color=sns.color_palette()[4])
-#sc6 = self.MplWidget.canvas.axes.scatter(kit_emb[:,0], kit_emb[:,1], s=14, marker='o', color=sns.color_palette()[5])
-#sc7 = self.MplWidget.canvas.axes.scatter(lfw_emb[:,0], lfw_emb[:,1], s=14, marker='o', color=sns.color_palette()[6])
-#sc8 = self.MplWidget.canvas.axes.scatter(pla_emb[:,0], pla_emb[:,1], s=14, marker='o', color=sns.color_palette()[7])
-#
-#    
-#self.MplWidget.canvas.axes.legend((sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8),
-#           ('Bedrooms', 'Celeba', 'Cityscapes', 'Flowers', 'Imagenet', 'Kitchens', 'LFW', 'Places'),
-#           scatterpoints=3,
-#           loc='best',
-#           ncol=2,
-#           fontsize=10)
-#self.MplWidget.canvas.axes.set_title('UMAP for Discriminator Layer ' + str(5))
-#self.MplWidget.canvas.draw()

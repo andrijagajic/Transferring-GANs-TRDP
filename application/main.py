@@ -14,10 +14,6 @@ from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navigati
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
-
-
-
-
     
 class MatplotlibWidget(QDialog):
     

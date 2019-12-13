@@ -33,7 +33,7 @@ def knn_estimation(target_data, source_data, k):
 
 supervised = False # Set supervised to True in order to get supervised UMAP
 all_layers = False # Set all_layers to True in order to extract 5 UMAPs, one for each layer inside discriminator network 
-histogram_features = False # SEt histogram_features to True in order to use histogram features instead of max pooling
+histogram_features = False # Set histogram_features to True in order to use histogram features instead of max pooling
 
 
 if all_layers == True:
@@ -987,7 +987,7 @@ else:
     
     
     if not supervised:    
-        plt.legend((sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8, sc9),
+        plt.legend((sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8),
                    ('Bedrooms', 'Celeba', 'Cityscapes', 'Flowers', 'Imagenet', 'Kitchens', 'LFW', 'Places', 'IPCV'),
                    scatterpoints=3,
                    loc='best',

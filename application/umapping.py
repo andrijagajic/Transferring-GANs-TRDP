@@ -32,24 +32,9 @@ import umap
 import os
 import seaborn as sns
 
-#fig = plt.figure(constrained_layout=True)
-#gs = fig.add_gridspec(2, 6)
-#ax1 = fig.add_subplot(gs[0, :2])
-#ax1.set_title('UMAP for Discriminator Layer 1')
-#ax2 = fig.add_subplot(gs[0, 2:4])
-#ax2.set_title('UMAP for Discriminator Layer 2')
-#ax3 = fig.add_subplot(gs[0, 4:])
-#ax3.set_title('UMAP for Discriminator Layer 3')
-#ax4 = fig.add_subplot(gs[-1, 1:3])
-#ax4.set_title('UMAP for Discriminator Layer 4')
-#ax5 = fig.add_subplot(gs[-1, 3:5])
-#ax5.set_title('UMAP for Discriminator Layer 5')
-
 os.chdir('../')
 
 
-#lay_num=2
-#layers = [0,1,2,3,4]
 def calc_umap(lay_num):
     for k in range(lay_num,lay_num+1):
         with open("activations/Bordeaux/Bedroom_source/Bedrooms/activations_det.txt", "rb") as fp:   # Unpickling
@@ -262,50 +247,9 @@ def calc_umap(lay_num):
         
         reducer = umap.UMAP()
         
-    #    bed_train = bed[0:500,:]
-    #    cel_train = cel[0:500,:]
-    #    cit_train = cit[0:500,:]
-    #    flo_train = flo[0:500,:]
-    #    ima_train = ima[0:500,:]
-    #    kit_train = kit[0:500,:]
-    #    lfw_train = lfw[0:500,:]
-    #    pla_train = pla[0:500,:]
-    #    comb_train = np.concatenate((bed_train,cel_train,cit_train,flo_train,ima_train,kit_train,lfw_train,pla_train),0)
-    #    
-    #    bed_test = bed[500:,:]
-    #    cel_test = cel[500:,:]
-    #    cit_test = cit[500:,:]
-    #    flo_test = flo[500:,:]
-    #    ima_test = ima[500:,:]
-    #    kit_test = kit[500:,:]
-    #    lfw_test = lfw[500:,:]
-    #    pla_test = pla[500:,:]
-    #    comb_test = np.concatenate((bed_test,cel_test,cit_test,flo_test,ima_test,kit_test,lfw_test,pla_test),0)
-    
-        
         comb = np.concatenate((bed,cel,cit,flo,ima,kit,lfw,pla),0)
         
         embedding = reducer.fit_transform(comb)
-        
-        
-    #    reducer.fit(comb_train)
-    #    
-    #    embedding = reducer.transform(comb_test)
-    #    
-    #    bed_emb = embedding[0:100,:]    
-    #    cel_emb = embedding[100:200,:]
-    #    cit_emb = embedding[200:300,:]
-    #    flo_emb = embedding[300:400,:]
-    #    ima_emb = embedding[400:500,:]
-    #    kit_emb = embedding[500:600,:]
-    #    lfw_emb = embedding[600:700,:]
-    #    pla_emb = embedding[700:800,:]
-        
-        #y = []
-        #for k in range(0,len(embedding)):
-        #    color = k//600
-        #    y.append(color)
-        #y = np.array(y)
         
         bed_emb = embedding[0:600,:]
         cel_emb = embedding[600:1200,:]
@@ -319,18 +263,6 @@ def calc_umap(lay_num):
     
     colors = ['b', 'c', 'y', 'm', 'r', 'p', 'k', 'g']
     
-#        if k == 0:
-#            ax = ax1
-#        elif k == 1:
-#            ax = ax2
-#        elif k == 2:
-#            ax = ax3
-#        elif k == 3:
-#            ax = ax4
-#        elif k == 4:
-#            ax = ax5
-#        
-#    plt.subplot(2,3,k+1)
     plt.figure()
     sc1 = plt.scatter(bed_emb[:,0], bed_emb[:,1], s=14, marker='o', color=sns.color_palette()[0])
     sc2 = plt.scatter(cel_emb[:,0], cel_emb[:,1], s=14, marker='o', color=sns.color_palette()[1])
@@ -350,26 +282,7 @@ def calc_umap(lay_num):
                fontsize=10)
     plt.title('UMAP for Discriminator Layer ' + str(k+1))
     plt.show()
-    
-#    sc1 = ax.scatter(bed_emb[:,0], bed_emb[:,1], s=14, marker='o', color=sns.color_palette()[0])
-#    sc2 = ax.scatter(cel_emb[:,0], cel_emb[:,1], s=14, marker='o', color=sns.color_palette()[1])
-#    sc3 = ax.scatter(cit_emb[:,0], cit_emb[:,1], s=14, marker='o', color=sns.color_palette()[2])
-#    sc4 = ax.scatter(flo_emb[:,0], flo_emb[:,1], s=14, marker='o', color=sns.color_palette()[3])
-#    sc5 = ax.scatter(ima_emb[:,0], ima_emb[:,1], s=14, marker='o', color=sns.color_palette()[4])
-#    sc6 = ax.scatter(kit_emb[:,0], kit_emb[:,1], s=14, marker='o', color=sns.color_palette()[5])
-#    sc7 = ax.scatter(lfw_emb[:,0], lfw_emb[:,1], s=14, marker='o', color=sns.color_palette()[6])
-#    sc8 = ax.scatter(pla_emb[:,0], pla_emb[:,1], s=14, marker='o', color=sns.color_palette()[7])
-#    
         
-#    ax.legend((sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8),
-#               ('Bedrooms', 'Celeba', 'Cityscapes', 'Flowers', 'Imagenet', 'Kitchens', 'LFW', 'Places'),
-#               scatterpoints=3,
-#               loc='best',
-#               ncol=2,
-#               fontsize=10)
-    #ax.title('UMAP for Discriminator Layer ' + str(k+1))
-    #ax.show()
-    
     bed_cen = np.median(bed_emb,0)
     cel_cen = np.median(cel_emb,0)
     cit_cen = np.median(cit_emb,0)
